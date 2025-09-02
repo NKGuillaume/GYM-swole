@@ -3,7 +3,7 @@ export default function Button(props) {
   return (
     <button
       onClick={func}
-      className="px-8 mx-auto py-4 border border-blue-400 border-[2px] border-solid rounded-md blueShadow duration-200"
+      className="px-8 mx-auto py-4 item-center border border-blue-400 border-[2px] border-solid rounded-md blueShadow duration-200"
     >
       <p>{text}</p>
     </button>

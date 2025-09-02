@@ -1,7 +1,7 @@
 import React from "react";
 import SectionWrapper from "./SectionWrapper";
 import { SCHEMES, WORKOUTS } from "../utils/swoldier";
-import Button from "./button";
+import Button from "./Button";
 function Header(props) {
   const { index, title, description } = props;
   return (
@@ -148,7 +148,9 @@ export default function Generator(props) {
           );
         })}
       </div>
-      <Button func={updateWorkout} text={["Forumlate"]} />
+      <div className="flex justify-center p-10 mt-4">
+        <Button func={updateWorkout} text={["Forumlate"]} />
+      </div>
     </SectionWrapper>
   );
 }
