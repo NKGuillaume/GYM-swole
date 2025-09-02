@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import SectionWrapper from "./SectionWrapper";
 import { SCHEMES, WORKOUTS } from "../utils/swoldier";
 import Button from "./button";
-
 function Header(props) {
   const { index, title, description } = props;
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center gap-2 justify-center">
         <p className="text-3xl sm:text-4xl md:text-5xl font-semibold text-slate-400">
           {index}
         </p>
@@ -20,42 +19,43 @@ function Header(props) {
 
 export default function Generator(props) {
   const {
-    muscles,
-    setMuscles,
     poison,
     setPoison,
+    muscles = [],
+    setMuscles,
     goal,
     setGoal,
     updateWorkout,
   } = props;
-  const [showModal, setShowModal] = useState(false);
+  const [showMode, setShowMode] = React.useState(false);
 
-  function toggleModal() {
-    setShowModal(!showModal);
+  function toggleMode() {
+    setShowMode(!showMode);
   }
 
-  function updateMuscles(muscleGroup) {
-    if (muscles.includes(muscleGroup)) {
-      setMuscles(muscles.filter((val) => val !== muscleGroup));
+  function updateMuscle(selected) {
+    if (muscles.includes(selected)) {
+      setMuscles(muscles.filter((val) => val !== selected));
+
       return;
     }
-
     if (muscles.length > 2) {
       return;
     }
 
     if (poison !== "individual") {
-      setMuscles([muscleGroup]);
-      setShowModal(false);
+      setMuscles([selected]);
+      setShowMode(false);
+
       return;
     }
+    setMuscles([...muscles, selected]);
 
-    setMuscles([...muscles, muscleGroup]);
     if (muscles.length === 2) {
-      setShowModal(false);
+      setShowMode(false);
+      return;
     }
   }
-
   return (
     <SectionWrapper
       id={"generate"}
@@ -65,7 +65,7 @@ export default function Generator(props) {
       <Header
         index={"01"}
         title={"Pick your poison"}
-        description={"Select the workout you wish to endure."}
+        description={"select the workout you wish to endure"}
       />
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {Object.keys(WORKOUTS).map((type, typeIndex) => {
@@ -76,7 +76,7 @@ export default function Generator(props) {
                 setPoison(type);
               }}
               className={
-                "bg-slate-950 border  duration-200 px-4 hover:border-blue-600 py-3 rounded-lg " +
+                "bg-slate-950 border border-blue-400 py-4 rounded-lg hover:border-blue-600" +
                 (type === poison ? " border-blue-600" : " border-blue-400")
               }
               key={typeIndex}
@@ -86,35 +86,34 @@ export default function Generator(props) {
           );
         })}
       </div>
+
       <Header
         index={"02"}
-        title={"Lock on targets"}
-        description={"Select the muscles judged for annihilation."}
+        title={"Lock on target"}
+        description={"select the muscle you wish to kill today"}
       />
-      <div className="bg-slate-950  border border-solid border-blue-400 rounded-lg flex flex-col">
+      <div className="bg-slate-950 py-3 border border-solid border-blue-400 flex flex-col rounded-lg">
         <button
-          onClick={toggleModal}
-          className="relative p-3 flex items-center justify-center"
+          onClick={toggleMode}
+          className="relative px-4 flex items-center justify-center"
         >
           <p className="capitalize">
-            {muscles.length == 0 ? "Select muscle groups" : muscles.join(" ")}
+            {muscles.length == 0 ? "Select a muscle group" : muscles.join(" ")}
           </p>
           <i className="fa-solid absolute right-3 top-1/2 -translate-y-1/2 fa-caret-down"></i>
         </button>
-        {showModal && (
-          <div className="flex flex-col px-3 pb-3">
+        {showMode && (
+          <div className="flex flex-col p-3">
             {(poison === "individual"
               ? WORKOUTS[poison]
               : Object.keys(WORKOUTS[poison])
-            ).map((muscleGroup, muscleGroupIndex) => {
+            ).map((muscleGroup, muscleIndex) => {
               return (
                 <button
-                  onClick={() => {
-                    updateMuscles(muscleGroup);
-                  }}
-                  key={muscleGroupIndex}
+                  onClick={() => updateMuscle(muscleGroup)}
+                  key={muscleIndex}
                   className={
-                    "hover:text-blue-400 duration-200 " +
+                    " px-4 hover:text-blue-400 duration-200" +
                     (muscles.includes(muscleGroup) ? " text-blue-400" : " ")
                   }
                 >
@@ -127,20 +126,19 @@ export default function Generator(props) {
           </div>
         )}
       </div>
+
       <Header
         index={"03"}
-        title={"Become Juggernaut"}
-        description={"Select your ultimate objective."}
+        title={"Become the beast"}
+        description={"select your ultimate objective."}
       />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {Object.keys(SCHEMES).map((scheme, schemeIndex) => {
           return (
             <button
-              onClick={() => {
-                setGoal(scheme);
-              }}
+              onClick={() => setGoal(scheme)}
               className={
-                "bg-slate-950 border  duration-200 hover:border-blue-600 py-3 rounded-lg px-4 " +
+                "bg-slate-950 px-4 border border-blue-400 py-4 rounded-lg hover:border-blue-600" +
                 (scheme === goal ? " border-blue-600" : " border-blue-400")
               }
               key={schemeIndex}
@@ -150,7 +148,7 @@ export default function Generator(props) {
           );
         })}
       </div>
-      <Button func={updateWorkout} text={"Formulate"}></Button>
+      <Button func={updateWorkout} text={["Forumlate"]} />
     </SectionWrapper>
   );
 }
